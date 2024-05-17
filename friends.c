@@ -12,8 +12,8 @@ void add_friend(list_graph_t *users, char *user1, char *user2)
 	uint16_t user2_id = get_user_id(user2);
 
 	lg_add_edge(users, user1_id, user2_id);
+	lg_add_edge(users, user2_id, user1_id);
 	printf("Added connection %s - %s\n", user1, user2);
-	//lg_print_graph(users);
 }
 
 void remove_friend(list_graph_t *users, char *user1, char *user2)
@@ -21,8 +21,8 @@ void remove_friend(list_graph_t *users, char *user1, char *user2)
 	uint16_t user1_id = get_user_id(user1);
 	uint16_t user2_id = get_user_id(user2);
 	lg_remove_edge(users, user1_id, user2_id);
+	lg_remove_edge(users, user2_id, user1_id);
 	printf("Removed connection %s - %s\n", user1, user2);
-	//lg_print_graph(users);
 }
 
 void user_suggestions(list_graph_t *users, char *user)
@@ -30,13 +30,19 @@ void user_suggestions(list_graph_t *users, char *user)
 	uint16_t user_id = get_user_id(user);
 	int *distance = bfs_list_graph(users, user_id);
 	int ok = 0;
-	for (int i = 0; i < users->nodes; i++)
+	for (int i = 0; i < users->nodes && !ok; i++)
+		if (distance[i] == 2)
+			ok = 1;
+	if (ok == 0) {
+		printf("There are no suggestions for %s\n", user);
+	} else  {
+		printf("Suggestions for %s:\n", user);
+		for (int i = 0; i < users->nodes; i++)
 		if (distance[i] == 2) {
 			printf("%s\n", get_user_name(i));
 			ok = 1;
 		}
-	if (ok == 0)
-		printf("There are no suggestions for %s\n", user);
+	}
 	free(distance);
 }
 
@@ -45,7 +51,7 @@ void find_distance(list_graph_t *users, char *user1, char *user2)
 	uint16_t user1_id = get_user_id(user1);
 	uint16_t user2_id = get_user_id(user2);
 	int *distance = bfs_list_graph(users, user1_id);
-	if (distance[user2_id] == -1)
+	if (distance[user2_id] == -1 || distance[user2_id] == 0)
 		printf("There is no way to get from %s to %s\n", user1, user2);
 	else
 		printf("The distance between %s - %s is %d\n", user1, user2, distance[user2_id]);
@@ -86,10 +92,9 @@ void find_common_friends(list_graph_t *users, char *user1, char *user2)
 	}
 
 	if (ok == 1) {
-		printf("Common friends for %s and %s:\n", user1, user2);
+		printf("The common friends between %s and %s are:\n", user1, user2);
 		for (int i = 0; i < ct; i++)
-			printf("%s ", get_user_name(common_friends[i]));
-		printf("\n");
+			printf("%s\n", get_user_name(common_friends[i]));
 	}
 	else
 	if (ok == 0)
@@ -158,4 +163,5 @@ void handle_input_friends(char *input, list_graph_t *users)
 		char *user = strtok(NULL, "\n ");
 		find_the_popular_one(users, user);
 	}
+	free(commands);
 }
