@@ -40,13 +40,13 @@ int main(void)
 
 	char *input = (char *)malloc(MAX_COMMAND_LEN);
 	list_graph_t *users = lg_create(520);
-	post_t* posts = malloc(sizeof(post_t) * 1000);
-	int nrp=0;
+	// post_t* posts = malloc(sizeof(post_t) * 1000);
+	// int nrp=0;
 	while (1) {
-		input = fgets(input, MAX_COMMAND_LEN, stdin);
+		//input = fgets(input, MAX_COMMAND_LEN, stdin);
 
 		// If fgets returns null, we reached EOF
-		if (!input)
+		if (!fgets(input, MAX_COMMAND_LEN, stdin))
 			break;
 
 		#ifdef TASK_1
@@ -54,13 +54,15 @@ int main(void)
 		#endif
 
 		#ifdef TASK_2
-		handle_input_posts(input,posts, &nrp);
+		handle_input_posts(input);
 		#endif
 
 		#ifdef TASK_3
 		handle_input_feed(input);
 		#endif
 	}
-
+	lg_free(users);
+	free(input);
+	free_users();
 	return 0;
 }
