@@ -40,11 +40,13 @@ struct queue_t
 	/* Bufferul ce stocheaza elementele cozii */
 	void **buff;
 };
+
 typedef struct post_t {
     int id, uid, nrlike;
-    char title[280];
+    char *title;
     linked_list_t* likes;
     list_graph_t* tree;
+	int father;
 } post_t;
 
 linked_list_t *ll_create(unsigned int data_size);
