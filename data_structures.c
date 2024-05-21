@@ -1,196 +1,179 @@
 #include "data_structures.h"
 
-linked_list_t *
-ll_create(unsigned int data_size)
+linked_list_t *ll_create(unsigned int data_size)
 {
-    linked_list_t* ll;
-    
-    ll = malloc(sizeof(*ll));
-    
-    ll->head = NULL;
-    ll->data_size = data_size;
-    ll->size = 0;
-    
-    return ll;
+	linked_list_t *ll;
+
+	ll = malloc(sizeof(*ll));
+
+	ll->head = NULL;
+	ll->data_size = data_size;
+	ll->size = 0;
+
+	return ll;
 }
 
-ll_node_t* get_nth_node(linked_list_t* list, unsigned int n)
+ll_node_t *get_nth_node(linked_list_t *list, unsigned int n)
 {
-    if (!list) {
-        return NULL;
-    }
-    
-    unsigned int len = list->size - 1;
-    unsigned int i;
-    ll_node_t* node = list->head;
-    
-    n = MIN(n, len);
-    
-    for (i = 0; i < n; ++i) {
-        node = node->next;
-    }
-    
-    return node;
+	if (!list)
+		return NULL;
+
+	unsigned int len = list->size - 1;
+	unsigned int i;
+	ll_node_t *node = list->head;
+
+	n = MIN(n, len);
+
+	for (i = 0; i < n; ++i)
+		node = node->next;
+
+	return node;
 }
 
 void
-ll_add_nth_node(linked_list_t* list, unsigned int n, const void* new_data)
+ll_add_nth_node(linked_list_t *list, unsigned int n, const void *new_data)
 {
-    ll_node_t *prev, *curr;
-    ll_node_t* new_node;
-    
-    if (!list) {
-        return;
-    }
-    
+	ll_node_t *prev, *curr;
+	ll_node_t *new_node;
+
+	if (!list)
+		return;
+
     /* n >= list->size inseamna adaugarea unui nou nod la finalul listei. */
-    if (n > list->size) {
-        n = list->size;
-    }
-    
-    curr = list->head;
-    prev = NULL;
-    while (n > 0) {
-        prev = curr;
-        curr = curr->next;
-        --n;
-    }
-    
-    new_node = malloc(sizeof(*new_node));
-    new_node->data = malloc(list->data_size);
-    memcpy(new_node->data, new_data, list->data_size);
-    
-    new_node->next = curr;
-    if (prev == NULL) {
-        /* Adica n == 0. */
-        list->head = new_node;
-    } else {
-        prev->next = new_node;
-    }
-    
-    list->size++;
+	if (n > list->size)
+		n = list->size;
+
+	curr = list->head;
+	prev = NULL;
+	while (n > 0) {
+		prev = curr;
+		curr = curr->next;
+		--n;
+	}
+
+	new_node = malloc(sizeof(*new_node));
+	new_node->data = malloc(list->data_size);
+	memcpy(new_node->data, new_data, list->data_size);
+
+	new_node->next = curr;
+	if (!prev)
+		/* Adica n == 0. */
+		list->head = new_node;
+	else
+		prev->next = new_node;
+	list->size++;
 }
 
-ll_node_t *
-ll_remove_nth_node(linked_list_t* list, unsigned int n)
+ll_node_t *ll_remove_nth_node(linked_list_t *list, unsigned int n)
 {
-    ll_node_t *prev, *curr;
-    
-    if (!list || !list->head) {
-        return NULL;
-    }
-    
-    /* n >= list->size - 1 inseamna eliminarea nodului de la finalul listei. */
-    if (n > list->size - 1) {
-        n = list->size - 1;
-    }
-    
-    curr = list->head;
-    prev = NULL;
-    while (n > 0) {
-        prev = curr;
-        curr = curr->next;
-        --n;
-    }
-    
-    if (prev == NULL) {
-        /* Adica n == 0. */
-        list->head = curr->next;
-    } else {
-        prev->next = curr->next;
-    }
-    
-    list->size--;
-    
-    return curr;
+	ll_node_t *prev, *curr;
+
+	if (!list || !list->head)
+		return NULL;
+
+	/* n >= list->size - 1 inseamna eliminarea nodului de la finalul listei. */
+	if (n > list->size - 1)
+		n = list->size - 1;
+
+	curr = list->head;
+	prev = NULL;
+	while (n > 0) {
+		prev = curr;
+		curr = curr->next;
+		--n;
+	}
+
+	if (!prev)
+		/* Adica n == 0. */
+		list->head = curr->next;
+	else
+		prev->next = curr->next;
+
+	list->size--;
+
+	return curr;
 }
 
 unsigned int
-ll_get_size(linked_list_t* list)
+ll_get_size(linked_list_t *list)
 {
-    if (!list) {
-        return -1;
-    }
-    
-    return list->size;
-}
+	if (!list)
+		return -1;
 
-
-void
-ll_free(linked_list_t** pp_list)
-{
-    ll_node_t* currNode;
-    
-    if (!pp_list || !*pp_list) {
-        return;
-    }
-    
-    while (ll_get_size(*pp_list) > 0) {
-        currNode = ll_remove_nth_node(*pp_list, 0);
-        free(currNode->data);
-        currNode->data = NULL;
-        free(currNode);
-        currNode = NULL;
-    }
-    
-    free(*pp_list);
-    *pp_list = NULL;
+	return list->size;
 }
 
 void
-ll_print_int(linked_list_t* list)
+ll_free(linked_list_t **pp_list)
 {
-    ll_node_t* curr;
-    if (!list) {
-        return;
-    }
-    if (!list->head)
-        return;
-    curr = list->head;
-    while (curr != NULL) {
-        printf("%d ", *((int*)curr->data));
-        curr = curr->next;
-    }
-    
-    printf("\n");
+	ll_node_t *currnode;
+
+	if (!pp_list || !*pp_list)
+		return;
+
+	while (ll_get_size(*pp_list) > 0) {
+		currnode = ll_remove_nth_node(*pp_list, 0);
+		free(currnode->data);
+		currnode->data = NULL;
+		free(currnode);
+		currnode = NULL;
+	}
+
+	free(*pp_list);
+	*pp_list = NULL;
+}
+
+void
+ll_print_int(linked_list_t *list)
+{
+	ll_node_t *curr;
+	if (!list)
+		return;
+	if (!list->head)
+		return;
+	curr = list->head;
+	while (curr) {
+		printf("%d ", *((int *)curr->data));
+		curr = curr->next;
+	}
+
+	printf("\n");
 }
 
 //  ---------GRAPH FUNCTIONS------------  //
 
-list_graph_t*
-lg_create(int nodes)
+list_graph_t *lg_create(int nodes)
 {
 	list_graph_t *graph = malloc(sizeof(list_graph_t));
-    graph->nodes = nodes;
-    graph->neighbors = (linked_list_t **)malloc(nodes * sizeof(linked_list_t));
-    for(int i = 0; i < nodes; ++i)
-        graph->neighbors[i] = ll_create(sizeof(int));
-    return graph;
+	graph->nodes = nodes;
+	graph->neighbors = (linked_list_t **)malloc(nodes * sizeof(linked_list_t));
+	for (int i = 0; i < nodes; ++i)
+		graph->neighbors[i] = ll_create(sizeof(int));
+	return graph;
 }
 
 int is_node_in_graph(int n, int nodes)
 {
-   return n >= 0 && n < nodes;
+	return n >= 0 && n < nodes;
 }
 
 /* Adauga o muchie intre nodurile primite ca parametri */
 void
-lg_add_edge(list_graph_t* graph, int src, int dest)
+lg_add_edge(list_graph_t *graph, int src, int dest)
 {
-      if (
+	if (
        !graph || !graph->neighbors
        || !is_node_in_graph(src, graph->nodes)
        || !is_node_in_graph(dest, graph->nodes)
    )
        return;
 
-
    ll_add_nth_node(graph->neighbors[src], graph->neighbors[src]->size, &dest);
 }
 
 /* Returneaza 1 daca exista muchie intre cele doua noduri, 0 in caz contrar */
 int
-lg_has_edge(list_graph_t* graph, int src, int dest)
+lg_has_edge(list_graph_t *graph, int src, int dest)
 {
 	if (!graph->neighbors[src]->head)
         return 0;
@@ -202,9 +185,8 @@ lg_has_edge(list_graph_t* graph, int src, int dest)
 
 /* Elimina muchia dintre nodurile primite ca parametri */
 void
-lg_remove_edge(list_graph_t* graph, int src, int dest)
+lg_remove_edge(list_graph_t *graph, int src, int dest)
 {
-    printf("src %d dest %d\n", src, dest);
 	if (!lg_has_edge(graph, src, dest))
         return;
     int i = 0;
@@ -220,7 +202,7 @@ lg_remove_edge(list_graph_t* graph, int src, int dest)
 
 /* Elibereaza memoria folosita de lista de adiacenta a grafului */
 void
-lg_free(list_graph_t* graph)
+lg_free(list_graph_t *graph)
 {
 	for (int i = 0; i < graph->nodes; ++i)
         ll_free(&graph->neighbors[i]);
@@ -231,7 +213,7 @@ lg_free(list_graph_t* graph)
 /* Printeaza lista de adiacenta a grafului
  */
 void
-lg_print_graph(list_graph_t* graph)
+lg_print_graph(list_graph_t *graph)
 {
 	for(int i = 0; i < graph->nodes; ++i) {
         if (graph->neighbors[i]->head)
@@ -242,10 +224,9 @@ lg_print_graph(list_graph_t* graph)
 
 // ---------QUEUE FUNCTIONS------------  //
 
-queue_t*
-q_create(unsigned int data_size, unsigned int max_size)
+queue_t *q_create(unsigned int data_size, unsigned int max_size)
 {
-	queue_t* q = calloc(1, sizeof(*q));
+	queue_t *q = calloc(1, sizeof(*q));
 
 	q->data_size = data_size;
 	q->max_size = max_size;
@@ -276,7 +257,7 @@ q_is_empty(queue_t *q)
 	return 0;
 }
 
-/* 
+/*
  * Functia intoarce primul element din coada, fara sa il elimine.
  */
 void *
@@ -307,9 +288,9 @@ q_dequeue(queue_t *q)
     return 1;
 }
 
-/* 
+/*
  * Functia introduce un nou element in coada. Se va intoarce 1 daca
- * operatia s-a efectuat cu succes (nu s-a atins dimensiunea maxima) 
+ * operatia s-a efectuat cu succes (nu s-a atins dimensiunea maxima)
  * si 0 in caz contrar.
  */
 int
@@ -346,13 +327,15 @@ q_free(queue_t *q)
         return;
 	q_clear(q);
     free(q->buff);
+    free(q);
 }
 
-int *bfs_list_graph(list_graph_t* lg, int node) // functie care intoarce un vector de distante de la un nod la toate celelalte noduri
+int *bfs_list_graph(list_graph_t *lg, int node) // functie care intoarce un vector de distante de la un nod la toate celelalte noduri
 {
 	int *colour = calloc(lg->nodes, sizeof(int));
 	int *dist = calloc(lg->nodes, sizeof(int));
-	memset(dist, 9999, lg->nodes);
+	for (int i = 0; i < lg->nodes; i++)
+		dist[i] = -1;
 	ll_node_t **parents = calloc(lg->nodes, sizeof(ll_node_t *));
 	queue_t *q = q_create(sizeof(int), lg->nodes);
 	colour[node] = 1;
