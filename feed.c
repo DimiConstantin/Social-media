@@ -73,15 +73,9 @@ void BronKerbosch(list_graph_t* users, int* R, int* P, int* X, int rsize,
     for (int i = 0; i < psize; i++) {
         int nod = P[i];
         R[rsize] = nod;
-        /*for (int j = 0; j <= rsize; j++)
-            printf("%s ", get_user_name(R[j]));
-        printf("da\n");*/
         int newP[USR_MAX] = { 0 }, newpsize = 0;
         int newX[USR_MAX] = { 0 }, newxsize = 0;
         for (int j = 0; j < psize; j++) {
-            // printf("%d  %d\n", nod, j);
-            // printf("%d    p de j\n", P[j]);
-            // ll_print_int(users->neighbors[P[j]]);
             if (lg_has_edge(users, nod, P[j])) {
                 newP[newpsize] = P[j];
                 newpsize++;
@@ -98,12 +92,6 @@ void BronKerbosch(list_graph_t* users, int* R, int* P, int* X, int rsize,
 
         P[i] = P[psize - 1];
         psize--;
-        /*for (int j = 0; j < psize; j++)
-            printf("%s ", get_user_name(P[j]));
-        printf("nu\n");
-        for (int j = 0; j <= rsize; j++)
-            printf("%s ", get_user_name(R[j]));
-        printf("yy\n");*/
         X[xsize++] = nod;
     }
 }
@@ -129,6 +117,7 @@ void common_group(int uid, list_graph_t* users)
 void handle_input_feed(char* input, post_t** posts, list_graph_t* users, int* nrp)
 {
     char* commands = strdup(input);
+	DIE(!commands, "mai bine dadeam comanda pe glovo");
     char* cmd = strtok(commands, "\n ");
 
     if (!cmd)
