@@ -5,7 +5,7 @@ linked_list_t* ll_create(unsigned int data_size)
     linked_list_t* ll;
 
     ll = malloc(sizeof(*ll));
-
+	DIE(!ll, "unde i lista nu e lista");
     ll->head = NULL;
     ll->data_size = data_size;
     ll->size = 0;
@@ -51,7 +51,9 @@ void ll_add_nth_node(linked_list_t* list, unsigned int n, const void* new_data)
     }
 
     new_node = malloc(sizeof(*new_node));
+	DIE(!new_node, "n am nod");
     new_node->data = malloc(list->data_size);
+	DIE(!new_node->data, "n are nimic nodu in el");
     memcpy(new_node->data, new_data, list->data_size);
 
     new_node->next = curr;
@@ -142,8 +144,10 @@ void ll_print_int(linked_list_t* list)
 list_graph_t* lg_create(int nodes)
 {
     list_graph_t* graph = malloc(sizeof(list_graph_t));
+	DIE(!graph, "s a dus graful");
     graph->nodes = nodes;
     graph->neighbors = (linked_list_t**)malloc(nodes * sizeof(linked_list_t));
+	DIE(!graph->neighbors, "nu are vecini, sta in America");
     for (int i = 0; i < nodes; ++i)
         graph->neighbors[i] = ll_create(sizeof(int));
     return graph;
@@ -218,12 +222,12 @@ void lg_print_graph(list_graph_t* graph)
 queue_t* q_create(unsigned int data_size, unsigned int max_size)
 {
     queue_t* q = calloc(1, sizeof(*q));
-
+	DIE(!q, "e mai mare coada la Mega");
     q->data_size = data_size;
     q->max_size = max_size;
 
     q->buff = malloc(max_size * sizeof(*q->buff));
-
+	DIE(!q->buff, "nu are buffer");
     return q;
 }
 
@@ -287,6 +291,7 @@ int q_enqueue(queue_t* q, void* new_data)
     if (q->write_idx >= q->max_size)
         return 0;
     q->buff[q->write_idx] = malloc(q->data_size);
+	DIE(!q->buff[q->write_idx], "n are loc la coada");
     memcpy(q->buff[q->write_idx], new_data, q->data_size);
     q->write_idx = (q->write_idx + 1) % q->max_size;
     q->size++;
@@ -319,10 +324,13 @@ void q_free(queue_t* q)
 int* bfs_list_graph(list_graph_t* lg, int node) // functie care intoarce un vector de distante de la un nod la toate celelalte noduri
 {
     int* colour = calloc(lg->nodes, sizeof(int));
+	DIE(!colour, "sunt albe nodurile");
     int* dist = calloc(lg->nodes, sizeof(int));
+	DIE(!dist, "baga pe maps sa afli distantele");
     for (int i = 0; i < lg->nodes; i++)
         dist[i] = -1;
     ll_node_t** parents = calloc(lg->nodes, sizeof(ll_node_t*));
+	DIE(!parents, "e orfan, n are parinti");
     queue_t* q = q_create(sizeof(int), lg->nodes);
     colour[node] = 1;
     dist[node] = 0;
