@@ -23,6 +23,7 @@ void create_post(int* nrpmain, post_t** posts, char* name, char* title)
     posts[nrp]->id = nrp;
     if (title) {
         posts[nrp]->title = malloc(strlen(title) + 1);
+        DIE(!posts[nrp]->title, "title malloc failed");
         strcpy(posts[nrp]->title, title);
     } else
         posts[nrp]->title = NULL;
@@ -106,7 +107,7 @@ void like_the_post(post_t** posts, int post_id, char* name, int repost_id)
     if (repost_id != 0) {
         post_id = repost_id;
         type = 2; // repostare
-    } // dau like la postare si sterg like-ul daca exista deja
+    }
     if (posts[post_id]->nrlike == 0) {
         ll_add_nth_node(posts[post_id]->likes, 0, &user_id); // adaug like
         posts[post_id]->nrlike++;
@@ -147,7 +148,6 @@ void like_the_post(post_t** posts, int post_id, char* name, int repost_id)
 
 void get_likes(post_t** posts, int post_id, int repost_id)
 {
-    // printf("am postarea %d si repostarea %d\n", post_id, repost_id);
     if (repost_id == 0)
         printf("Post %s has %d likes\n", posts[post_id]->title,
             posts[post_id]->nrlike);
@@ -177,6 +177,7 @@ void ratio(post_t** posts, int post_id, int* nrp)
 void handle_input_posts(char* input, post_t** posts, int* nrp)
 {
     char* commands = strdup(input);
+    DIE(!commands, "mai bine dadeam comanda pe glovo");
     char* cmd = strtok(commands, "\n ");
     char *name, *title;
     if (!cmd)
