@@ -39,11 +39,13 @@ int main(void)
     init_tasks();
 
     char* input = (char*)malloc(MAX_COMMAND_LEN);
-    DIE(!input, "no malloc done\n");
+    DIE(!input, "no malloc done");
     list_graph_t* users = lg_create(USR_MAX);
     post_t** posts = malloc(sizeof(post_t*) * NOD_MAX);
+	DIE(!posts, "a picat curentul la facebook");
     for (int i = 0; i < NOD_MAX; i++) {
         posts[i] = malloc(sizeof(post_t));
+		DIE(!posts[i], "oooo ceausesculeeee");
     }
     int nrp = 0;
     while (1) {
